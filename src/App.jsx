@@ -5,14 +5,30 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null)
   const [selectedModalImage, setSelectedModalImage] = useState(null)
   const [viewerImage, setViewerImage] = useState(null)
+  const [detailCardId, setDetailCardId] = useState(null)
+  const [detailImageIndex, setDetailImageIndex] = useState(0)
   const [selectedTab, setSelectedTab] = useState('cards')
   const [brokenExtras, setBrokenExtras] = useState([])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('card')
+    if (id) {
+      setDetailCardId(Number(id))
+      setSelectedTab('cards')
+      setDetailImageIndex(0)
+    }
+  }, [])
 
   useEffect(() => {
     setBrokenExtras([])
     setSelectedModalImage(selectedCard ? selectedCard.image : null)
     setViewerImage(null)
   }, [selectedCard])
+
+  useEffect(() => {
+    setDetailImageIndex(0)
+  }, [detailCardId])
 
   const categories = [
     { id: 'all', name: 'All Cards' },
@@ -236,6 +252,10 @@ function App() {
     justifyContent: 'center'
   }
 
+  const detailCard = detailCardId ? cards.find(card => card.id === detailCardId) : null
+  const detailImages = detailCard ? [detailCard.image, ...(detailCard.extraImages || [])] : []
+  const currentDetailImage = detailImages[detailImageIndex] || detailCard?.image
+
   return (
     <div className="page-root" style={{ minHeight: '100vh' }}>
       {/* Header */}
@@ -248,14 +268,30 @@ function App() {
             <div style={{ display: 'flex', gap: '12px', marginLeft: 'auto' }}>
               <button
                 className={`button-glow ${selectedTab === 'cards' ? 'active' : ''}`}
-                onClick={() => setSelectedTab('cards')}
+                onClick={() => {
+                  if (detailCardId) {
+                    const url = new URL(window.location.href)
+                    url.searchParams.delete('card')
+                    window.history.replaceState({}, '', url)
+                    setDetailCardId(null)
+                  }
+                  setSelectedTab('cards')
+                }}
                 style={buttonStyle(selectedTab === 'cards')}
               >
                 Cards
               </button>
               <button
                 className={`button-glow ${selectedTab === 'contact' ? 'active' : ''}`}
-                onClick={() => setSelectedTab('contact')}
+                onClick={() => {
+                  if (detailCardId) {
+                    const url = new URL(window.location.href)
+                    url.searchParams.delete('card')
+                    window.history.replaceState({}, '', url)
+                    setDetailCardId(null)
+                  }
+                  setSelectedTab('contact')
+                }}
                 style={buttonStyle(selectedTab === 'contact')}
               >
                 Contact
@@ -265,7 +301,83 @@ function App() {
         </div>
       </header>
 
-      {selectedTab === 'cards' ? (
+      {detailCard ? (
+        <div style={containerStyle}>
+          <div style={{ padding: '32px 0', display: 'grid', gap: '28px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '28px', alignItems: 'start' }}>
+              <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 60px rgba(0,0,0,0.12)', position: 'relative' }}>
+                <img
+                  src={currentDetailImage}
+                  alt={detailCard.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', minHeight: '420px', backgroundColor: '#f8fafc' }}
+                />
+                {detailImages.length > 1 && (
+                  <div style={{ position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '10px', backgroundColor: 'rgba(255,255,255,0.88)', padding: '8px 12px', borderRadius: '9999px', boxShadow: '0 10px 30px rgba(0,0,0,0.12)' }}>
+                    <button
+                      onClick={() => setDetailImageIndex((prev) => (prev - 1 + detailImages.length) % detailImages.length)}
+                      style={{ border: 'none', background: '#fff', borderRadius: '9999px', padding: '8px 14px', cursor: 'pointer', fontWeight: 700, color: '#4338ca' }}
+                    >
+                      Prev
+                    </button>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', color: '#4b5563', fontSize: '14px' }}>
+                      {detailImageIndex + 1} / {detailImages.length}
+                    </span>
+                    <button
+                      onClick={() => setDetailImageIndex((prev) => (prev + 1) % detailImages.length)}
+                      style={{ border: 'none', background: '#fff', borderRadius: '9999px', padding: '8px 14px', cursor: 'pointer', fontWeight: 700, color: '#4338ca' }}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                <div>
+                  <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>Card Number</p>
+                  <p style={{ margin: '8px 0 0', fontSize: '20px', fontWeight: 700, color: '#111827' }}>{detailCard.number}</p>
+                </div>
+                <div>
+                  <h2 style={{ margin: '0 0 12px', fontSize: '30px', color: '#1f2937' }}>{detailCard.title}</h2>
+                  <p style={{ margin: 0, color: '#4b5563', fontSize: '16px', lineHeight: '1.7' }}>{detailCard.description}</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 700, color: '#9333ea' }}>{detailCard.price}</span>
+                  <a
+                    href={detailCard.pdf || `/pdfs/card-${detailCard.id}.pdf`}
+                    download
+                    style={{ padding: '12px 18px', background: '#9333ea', color: 'white', borderRadius: '16px', textDecoration: 'none', fontWeight: 700 }}
+                  >
+                    Download PDF
+                  </a>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                  {detailCard.features.map((feature, idx) => (
+                    <span key={idx} style={{ backgroundColor: '#ede9fe', color: '#5b21b6', padding: '8px 12px', borderRadius: '9999px', fontSize: '14px' }}>{feature}</span>
+                  ))}
+                </div>
+                <div style={{ padding: '20px', borderRadius: '20px', background: '#f3e8ff', color: '#4b5563' }}>
+                  <h3 style={{ margin: '0 0 10px', fontSize: '18px', color: '#1f2937' }}>Need help?</h3>
+                  <p style={{ margin: '0 0 14px', fontSize: '14px', lineHeight: '1.6' }}>Contact me with the card number for pricing, customization, and order details.</p>
+                  <p style={{ margin: '0 0 8px', fontSize: '14px' }}><strong>Phone:</strong> <a href="tel:9062414676" style={{ color: '#9333ea', textDecoration: 'none' }}>9062414676</a></p>
+                  <p style={{ margin: 0, fontSize: '14px' }}><strong>Email:</strong> <a href="mailto:d.sayan1998@gmail.com" style={{ color: '#9333ea', textDecoration: 'none' }}>d.sayan1998@gmail.com</a></p>
+                </div>
+                <button
+                  onClick={() => {
+                    const url = new URL(window.location.href)
+                    url.searchParams.delete('card')
+                    window.history.replaceState({}, '', url)
+                    setDetailCardId(null)
+                    setSelectedTab('cards')
+                  }}
+                  style={{ marginTop: '10px', alignSelf: 'flex-start', padding: '12px 18px', borderRadius: '16px', border: 'none', cursor: 'pointer', background: '#fff', color: '#4b5563', boxShadow: '0 10px 20px rgba(0,0,0,0.08)' }}
+                >
+                  Back to Gallery
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : selectedTab === 'cards' ? (
         <>
           <div style={containerStyle}>
             <div style={{ padding: '32px 0', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
@@ -299,7 +411,11 @@ function App() {
                   key={card.id}
                   className="card-item fade-in-up"
                   style={{ ...cardStyle, animationDelay: `${idx * 0.05}s` }}
-                  onClick={() => setSelectedCard(card)}
+                  onClick={() => {
+                    const url = new URL(window.location.href)
+                    url.searchParams.set('card', card.id)
+                    window.open(url.toString(), '_blank', 'noopener')
+                  }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'scale(1.05)'
                     e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
