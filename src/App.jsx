@@ -296,6 +296,21 @@ function App() {
               >
                 Contact
               </button>
+              <button
+                className={`button-glow ${selectedTab === 'instructions' ? 'active' : ''}`}
+                onClick={() => {
+                  if (detailCardId) {
+                    const url = new URL(window.location.href)
+                    url.searchParams.delete('card')
+                    window.history.replaceState({}, '', url)
+                    setDetailCardId(null)
+                  }
+                  setSelectedTab('instructions')
+                }}
+                style={buttonStyle(selectedTab === 'instructions')}
+              >
+                Instructions
+              </button>
             </div>
           </div>
         </div>
@@ -373,6 +388,11 @@ function App() {
                 >
                   Back to Gallery
                 </button>
+                <div style={{ marginTop: '24px', padding: '18px', borderRadius: '16px', background: '#dbeafe', borderLeft: '5px solid #0284c7' }}>
+                  <p style={{ margin: 0, color: '#0c4a6e', fontSize: '15px', lineHeight: '1.6' }}>
+                    <strong>📋 Important:</strong> Please read the <button onClick={() => setSelectedTab('instructions')} style={{ background: 'none', border: 'none', color: '#0284c7', cursor: 'pointer', textDecoration: 'underline', fontWeight: 700, padding: 0 }}>Instructions</button> carefully before placing an order.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -471,6 +491,65 @@ function App() {
             </div>
           </div>
         </>
+      ) : selectedTab === 'contact' ? (
+        <div style={containerStyle} className="contact-panel">
+          <div style={{ padding: '48px 0', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>Contact Me</h2>
+            <p style={{ fontSize: '16px', color: '#4b5563', marginBottom: '24px' }}>
+              Call or email me with the card number. I will help you with pricing, customizations, and order details.
+            </p>
+            <div style={{ display: 'grid', gap: '18px', background: 'white', padding: '24px', borderRadius: '24px', boxShadow: '0 10px 25px rgba(0,0,0,0.08)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: '24px', rowGap: '12px', alignItems: 'center' }}>
+                <span style={{ fontSize: '14px', color: '#6b7280' }}>Phone</span>
+                <a href="tel:9062414676" style={{ fontSize: '18px', fontWeight: 700, color: '#9333ea', textDecoration: 'none' }}>9062414676</a>
+                <span style={{ fontSize: '14px', color: '#6b7280' }}>Email</span>
+                <a href="mailto:d.sayan1998@gmail.com" style={{ fontSize: '18px', fontWeight: 700, color: '#9333ea', textDecoration: 'none' }}>d.sayan1998@gmail.com</a>
+              </div>
+              <div style={{ marginTop: '8px', padding: '16px', background: '#f3e8ff', borderRadius: '16px' }}>
+                <p style={{ margin: 0, fontSize: '14px', color: '#4b5563' }}><strong>Note:</strong> Please mention the card number when you contact me.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : selectedTab === 'instructions' ? (
+        <div style={containerStyle} className="instructions-panel">
+          <div style={{ padding: '48px 0', maxWidth: '800px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: '#1f2937', marginBottom: '32px', textAlign: 'center' }}>Ordering Instructions</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div style={{ padding: '24px', borderRadius: '20px', background: '#f8fafc', borderLeft: '6px solid #9333ea' }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: '20px', color: '#1f2937', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: '#9333ea', color: 'white', fontWeight: 700, fontSize: '16px' }}>1</span>
+                  Advance Payment
+                </h3>
+                <p style={{ margin: 0, color: '#4b5563', fontSize: '16px', lineHeight: '1.7' }}>50% advance is required while placing the order. The remaining balance should be paid upon delivery or completion.</p>
+              </div>
+              <div style={{ padding: '24px', borderRadius: '20px', background: '#f8fafc', borderLeft: '6px solid #9333ea' }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: '20px', color: '#1f2937', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: '#9333ea', color: 'white', fontWeight: 700, fontSize: '16px' }}>2</span>
+                  Minimum Order Quantity
+                </h3>
+                <p style={{ margin: 0, color: '#4b5563', fontSize: '16px', lineHeight: '1.7' }}>Cards must be ordered in multiples of 25 (25, 50, 75, 100, and so on). Bulk orders may be eligible for special discounts.</p>
+              </div>
+              <div style={{ padding: '24px', borderRadius: '20px', background: '#f8fafc', borderLeft: '6px solid #9333ea' }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: '20px', color: '#1f2937', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: '#9333ea', color: 'white', fontWeight: 700, fontSize: '16px' }}>3</span>
+                  Printing Charges
+                </h3>
+                <p style={{ margin: 0, color: '#4b5563', fontSize: '16px', lineHeight: '1.7' }}>Printing cost is applicable separately and will be calculated based on the card design, quantity, and paper quality you select.</p>
+              </div>
+              <div style={{ padding: '24px', borderRadius: '20px', background: '#f8fafc', borderLeft: '6px solid #9333ea' }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: '20px', color: '#1f2937', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: '#9333ea', color: 'white', fontWeight: 700, fontSize: '16px' }}>4</span>
+                  Shipping & Courier
+                </h3>
+                <p style={{ margin: 0, color: '#4b5563', fontSize: '16px', lineHeight: '1.7' }}>Shipping and courier charges are applicable separately and will be calculated based on your delivery location, distance, and the weight of the order.</p>
+              </div>
+              <div style={{ marginTop: '16px', padding: '20px', borderRadius: '16px', background: '#fef3c7', borderLeft: '6px solid #f59e0b' }}>
+                <p style={{ margin: 0, color: '#78350f', fontSize: '15px', lineHeight: '1.6' }}><strong>💡 Tip:</strong> Contact me for a detailed quote including all charges before finalizing your order.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : (
         <div style={containerStyle} className="contact-panel">
           <div style={{ padding: '48px 0', textAlign: 'center' }}>
