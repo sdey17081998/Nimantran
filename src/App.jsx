@@ -390,7 +390,13 @@ function App() {
                 </button>
                 <div style={{ marginTop: '24px', padding: '18px', borderRadius: '16px', background: '#dbeafe', borderLeft: '5px solid #0284c7' }}>
                   <p style={{ margin: 0, color: '#0c4a6e', fontSize: '15px', lineHeight: '1.6' }}>
-                    <strong>📋 Important:</strong> Please read the <button onClick={() => setSelectedTab('instructions')} style={{ background: 'none', border: 'none', color: '#0284c7', cursor: 'pointer', textDecoration: 'underline', fontWeight: 700, padding: 0 }}>Instructions</button> carefully before placing an order.
+                    <strong>📋 Important:</strong> Please read the <button onClick={() => {
+                      const url = new URL(window.location.href)
+                      url.searchParams.delete('card')
+                      window.history.replaceState({}, '', url)
+                      setDetailCardId(null)
+                      setSelectedTab('instructions')
+                    }} style={{ background: 'none', border: 'none', color: '#0284c7', cursor: 'pointer', textDecoration: 'underline', fontWeight: 700, padding: 0 }}>Instructions</button> carefully before placing an order.
                   </p>
                 </div>
               </div>
