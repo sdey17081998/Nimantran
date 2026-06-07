@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 function App() {
-  const [selectedCategory, setSelectedCategory] = useState('all')
+
   const [selectedCard, setSelectedCard] = useState(null)
   const [selectedModalImage, setSelectedModalImage] = useState(null)
   const [viewerImage, setViewerImage] = useState(null)
@@ -30,13 +30,6 @@ function App() {
     setDetailImageIndex(0)
   }, [detailCardId])
 
-  const categories = [
-    { id: 'all', name: 'All Cards' },
-    { id: 'wedding', name: 'Wedding' },
-    { id: 'birthday', name: 'Birthday' },
-    { id: 'rice-ceremony', name: 'Rice Ceremony' },
-  ]
-
   const cards = [
     {
       id: 1,
@@ -63,51 +56,6 @@ function App() {
       extraImages: ['/images/wedding-2-1.jpg']
     },
     {
-      id: 3,
-      number: 'C103',
-      category: 'birthday',
-      title: 'Birthday Celebration Card',
-      description: 'Colorful design with rangoli patterns and festive theme',
-      price: '₹35',
-      features: ['Rangoli art', 'Bright colors', 'Glossy finish'],
-      image: '/images/birthday-1.jpg',
-      pdf: '/pdfs/card-3.pdf',
-      extraImages: ['/images/birthday-1-1.jpg', '/images/birthday-1-2.jpg']
-    },
-    {
-      id: 4,
-      number: 'C104',
-      category: 'birthday',
-      title: 'First Birthday Invitation',
-      description: 'Special card for baby first birthday with cute designs',
-      price: '₹45',
-      features: ['Baby theme', 'Custom age', 'Soft colors'],
-      image: '/images/birthday-2.jpg',
-      pdf: '/pdfs/card-4.pdf'
-    },
-    {
-      id: 5,
-      number: 'C105',
-      category: 'rice-ceremony',
-      title: 'Annaprashan Ceremony Card',
-      description: 'Traditional rice ceremony invitation with auspicious symbols',
-      price: '₹55',
-      features: ['Om symbol', 'Traditional', 'Cultural'],
-      image: '/images/rice-ceremony-1.jpg',
-      pdf: '/pdfs/card-5.pdf'
-    },
-    {
-      id: 6,
-      number: 'C106',
-      category: 'rice-ceremony',
-      title: 'Mukhagni Ceremony Card',
-      description: 'Sacred ceremony card with traditional Indian motifs',
-      price: '₹65',
-      features: ['Sacred symbols', 'Traditional', 'Premium'],
-      image: '/images/rice-ceremony-2.jpg',
-      pdf: '/pdfs/card-6.pdf'
-    },
-    {
       id: 7,
       number: 'C107',
       category: 'wedding',
@@ -118,33 +66,9 @@ function App() {
       image: '/images/wedding-3.jpg',
       pdf: '/pdfs/card-7.pdf'
     },
-    {
-      id: 8,
-      number: 'C108',
-      category: 'birthday',
-      title: 'Birthday Bash Card',
-      description: 'Fun and vibrant birthday card with confetti design',
-      price: '₹25',
-      features: ['Confetti', 'Vibrant', 'Party theme'],
-      image: '/images/birthday-3.jpg',
-      pdf: '/pdfs/card-8.pdf'
-    },
-    {
-      id: 9,
-      number: 'C109',
-      category: 'rice-ceremony',
-      title: 'Namkaran Ceremony Card',
-      description: 'Naming ceremony card with traditional Indian aesthetics',
-      price: '₹40',
-      features: ['Naming theme', 'Traditional', 'Elegant'],
-      image: '/images/rice-ceremony-3.jpg',
-      pdf: '/pdfs/card-9.pdf'
-    },
   ]
 
-  const filteredCards = selectedCategory === 'all' 
-    ? cards 
-    : cards.filter(card => card.category === selectedCategory)
+  const filteredCards = cards
 
   const headerStyle = {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -405,31 +329,6 @@ function App() {
         </div>
       ) : selectedTab === 'cards' ? (
         <>
-          <div style={containerStyle}>
-            <div style={{ padding: '32px 0', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  className="button-glow"
-                  onClick={() => setSelectedCategory(category.id)}
-                  style={buttonStyle(selectedCategory === category.id)}
-                  onMouseEnter={(e) => {
-                    if (!selectedCategory === category.id) {
-                      e.target.style.backgroundColor = '#f3e8ff'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!selectedCategory === category.id) {
-                      e.target.style.backgroundColor = 'white'
-                    }
-                  }}
-                >
-                  {category.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div style={containerStyle}>
             <div style={{ paddingBottom: '48px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
               {filteredCards.map((card, idx) => (
