@@ -56,8 +56,8 @@ function App() {
       extraImages: ['/images/wedding-2-1.jpg']
     },
     {
-      id: 7,
-      number: 'C107',
+      id: 3,
+      number: 'C103',
       category: 'wedding',
       title: 'Bengali Wedding Invitation',
       description: 'Traditional Bengali wedding card with shakha pola design',
